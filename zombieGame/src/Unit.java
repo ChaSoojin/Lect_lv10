@@ -52,9 +52,15 @@ public abstract class Unit {
 		this.def = def;
 	}
 	
-	public abstract void attack(Unit target);
-	
-	
+	public void attack(Unit target) {
+		int dam = (this.att - target.def)*(ran.nextInt(150)+50)/100;
+		if(dam <= 0) dam = 1;
+		System.out.println(name + "의 공격!");
+		System.out.println(dam + "의 대미지!");
+		target.setHp(target.getHp() - dam);
+		System.out.println(target.name + "의 남은 체력 : " + target.hp);
+	}
+		
 	@Override
 	public String toString() {
 		String unitInfo = "";

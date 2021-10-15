@@ -28,6 +28,8 @@ public class ZombieKing extends Unit{
 			
 			target.setHp(target.getHp() - damage);
 			System.out.println(target.getName() + "의 남은 체력 : " + target.getHp());
+			
 		}
+		else super.attack(target);
 	}
 }

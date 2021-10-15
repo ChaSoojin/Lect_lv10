@@ -38,6 +38,12 @@ public class Hero extends Unit {
 				
 				System.out.println(target.getName() + "의 남은 체력 : " + target.getHp() + " (쉴드 : " + ((ZombieKing) target).getShield()+")");
 			}
+			else {
+				super.attack(target);
+			}
+		}
+		else {
+			super.attack(target);
 		}
 	}
 }
