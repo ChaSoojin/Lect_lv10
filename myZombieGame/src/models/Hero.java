@@ -11,9 +11,15 @@ public class Hero extends Unit implements Attackable, Repairable, Damageable{
 		super(name, hp, att, def, pos);
 	}
 	
+	public int getDrinkCnt() {
+		return this.drinkCnt;
+	}
+	
 	@Override
-	public void attack(Unit target) {
+	public void attack(Damageable damageable) {
 		// A instanceof B : A객체가 B 클래스의 객체가 맞으면 true를 반환하고, 틀리면 false를 반환한다
+		
+		Unit target = (Unit) damageable;
 		
 		if(target instanceof ZombieKing) {
 			if(((ZombieKing) target).getShield() > 0) {
@@ -32,11 +38,11 @@ public class Hero extends Unit implements Attackable, Repairable, Damageable{
 				System.out.println(target.getName() + "의 남은 체력 : " + target.getHp() + " (쉴드 : " + ((ZombieKing) target).getShield()+")");
 			}
 			else {
-				super.attack(target);
+				super.attack(damageable);
 			}
 		}
 		else {
-			super.attack(target);
+			super.attack(damageable);
 		}
 	}
 	

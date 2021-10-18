@@ -10,8 +10,8 @@ public class Zombie extends Unit implements Attackable, Damageable{
 	}
 	
 	@Override
-	public void attack(Unit target) {
-		super.attack(target);
+	public void attack(Damageable damageable) {
+		super.attack(damageable);
 	}
 
 	@Override

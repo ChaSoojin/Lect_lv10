@@ -3,6 +3,7 @@ package models;
 import java.util.Random;
 
 import zombie_interface.Attackable;
+import zombie_interface.Damageable;
 
 public abstract class Unit implements Attackable{
 	private static Random ran = new Random();
@@ -48,6 +49,18 @@ public abstract class Unit implements Attackable{
 		this.hp = hp;
 	}
 	
+	public void setPos(int pos) {
+		this.pos = pos;
+	}
+	
+	public void setAtt(int att) {
+		this.att = att;
+	}
+	
+	public void setDef(int def) {
+		this.def = def;
+	}
+	
 	@Override
 	public String toString() {
 		String unitInfo = "";
@@ -58,11 +71,15 @@ public abstract class Unit implements Attackable{
 	}
 
 	@Override
-	public void attack(Unit target) {
+	public void attack(Damageable damageable) {
+		Unit target = (Unit) damageable;
+		
 		int damage = (this.att - target.def)*(ran.nextInt(150)+50)/100;
 		if(damage <= 0) damage = 1;
+		
 		System.out.println(this.name + "의 공격!");
 		System.out.println(damage + "의 대미지!");
+		
 		target.setHp(target.getHp() - damage);
 		System.out.println(target.name + "의 남은 체력 : " + target.hp);
 	}

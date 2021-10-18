@@ -1,7 +1,5 @@
 package zombie_interface;
 
-import models.Unit;
-
 public interface Attackable {
-	public void attack(Unit target);
+	public void attack(Damageable damageable);
 }

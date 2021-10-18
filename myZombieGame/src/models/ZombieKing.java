@@ -1,6 +1,7 @@
 package models;
 
 import zombie_interface.Attackable;
+import zombie_interface.Damageable;
 
 public class ZombieKing extends Unit implements Attackable{
 	private int shield;
@@ -19,7 +20,9 @@ public class ZombieKing extends Unit implements Attackable{
 	}
 	
 	@Override
-	public void attack(Unit target) {
+	public void attack(Damageable damageable) {
+		Unit target = (Unit) damageable;
+		
 		if(getRanClass().nextInt(100) > 74) {
 			int damage = (this.getAtt() - target.getDef()) * (getRanClass().nextInt(150) + 50) / 100;
 			
@@ -33,6 +36,6 @@ public class ZombieKing extends Unit implements Attackable{
 			System.out.println(target.getName() + "의 남은 체력 : " + target.getHp());
 			
 		}
-		else super.attack(target);
+		else super.attack(damageable);
 	}
 }
