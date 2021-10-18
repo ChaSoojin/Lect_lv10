@@ -58,10 +58,4 @@ public class Hero extends Unit implements Attackable, Repairable, Damageable{
 		
 		else System.out.println("[실패]물약이 없습니다.");
 	}
-
-	@Override
-	public void damage(int att) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -12,7 +12,7 @@ public class Game {
 	private Scanner scan = new Scanner(System.in);
 	private static Game instance = new Game();
 	private ArrayList<Unit> enemyList = null;
-	Hero player;
+	private Hero player;
 	
 	private Game() {
 		this.enemyList = new ArrayList<Unit>();
