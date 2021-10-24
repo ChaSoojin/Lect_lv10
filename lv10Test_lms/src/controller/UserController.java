@@ -20,6 +20,14 @@ public class UserController {
 		return instance;
 	}
 	
+	public Map<Long, Object> getUserList(){
+		return this.userList;
+	}
+	
+	public User getUserObject() {
+		return (User) this.userList.get(User.log);
+	}
+	
 	public void join() {
 		if(User.log == -1) {
 			int key = 0;
@@ -52,7 +60,7 @@ public class UserController {
 					//학생가입
 					if(key == 1) {
 						long code = ranCode();
-						this.userList.put(code, new Student(id, pw, name));
+						this.userList.put(code, new Student(code, id, pw, name));
 						
 						User student = (User)this.userList.get(code);
 						student.setInfo(code);
@@ -61,7 +69,7 @@ public class UserController {
 					//강사가입
 					else if(key == 2) {
 						long code = ranCode();
-						this.userList.put(code, new Instructor(id, pw, name));
+						this.userList.put(code, new Instructor(code, id, pw, name));
 						
 						User instructor = (User)this.userList.get(code);
 						instructor.setInfo(code);
@@ -122,6 +130,8 @@ public class UserController {
 				else if(((User) userList.get(User.log)).getKey() == 2) loginSuccess = 2;
 			}			
 		}
+		else System.out.println("[실패]이미 로그인중입니다.");
+		
 		return loginSuccess;
 	}
 	
@@ -164,11 +174,69 @@ public class UserController {
 	}
 
 	public void alignStudents() {
+		Object[] keys = null;
+
+		System.out.println("1.이름순   2.학번순");
+		String select = SystemController.getInstance().getScanClass().next();
 		
+		try {
+			int sel = Integer.parseInt(select);
+			
+			if(sel == 1) keys = alignbyName();
+			else if(sel == 2) keys = alignbyCode();
+			
+		} catch (Exception e) {}
+	
+		
+		for(int i = 0; i < keys.length; i++) {
+			if(((User)this.userList.get(keys[i])).getKey() == 1) {
+				((User)this.userList.get(keys[i])).printInfo();
+			}
+		}
+	}
+
+	//학번순 정렬
+	private Object[] alignbyCode() {
+		Object[] keys = this.userList.keySet().toArray();
+		for(int i = 0; i < keys.length; i++) {
+			for(int j = i+1; j < keys.length; j++) {
+				if((long)keys[i] > (long)keys[j]) {
+					Object tmp = keys[i];
+					keys[i] = keys[j];
+					keys[j] = tmp;
+				}
+			}
+		}		
+		
+		return keys;
+	}
+
+	//이름순 정렬
+	private Object[] alignbyName() {
+		Object[] keys = this.userList.keySet().toArray();
+		for(int i = 0; i < keys.length; i++) {
+			for(int j = i+1; j < keys.length; j++) {
+				String name = ((User) this.userList.get(keys[i])).getName();
+				
+				if(((User) this.userList.get(keys[j])).getName().compareTo(name) < 0) {
+					Object tmp = (long) keys[i];
+					keys[i] = keys[j];
+					keys[j] = tmp;
+				}
+			}
+		}		
+		
+		return keys;
 	}
 
 	public void printStudents() {
-		
+		System.out.println("------ 학생 리스트 ------");
+		for(Object key : this.userList.keySet()) {
+			if(((User)this.userList.get(key)).getKey() == 1) {
+				((User)this.userList.get(key)).printInfo();
+			}
+		}
+		System.out.println();
 	}
 	
 	public void printAllUsers() {
@@ -177,5 +245,21 @@ public class UserController {
 			((User)this.userList.get(key)).printInfo();
 		}
 		System.out.println();
+	}
+	
+	public void userSetting(int key, long code, String id, String pw, String name) {		
+		//학생가입
+		if(key == 1) {
+			this.userList.put(code, new Student(code, id, pw, name));
+			User student = (User)this.userList.get(code);
+			student.setInfo(code);
+		}
+		
+		//강사가입
+		else if(key == 2) {
+			this.userList.put(code, new Instructor(code, id, pw, name));	
+			User instructor = (User)this.userList.get(code);
+			instructor.setInfo(code);
+		}
 	}
 }

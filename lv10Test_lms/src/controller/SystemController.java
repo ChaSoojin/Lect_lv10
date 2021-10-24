@@ -1,17 +1,12 @@
 package controller;
 
 import java.util.Scanner;
-
 import models.User;
 
 public class SystemController {
 	private static SystemController instance = new SystemController();
 	private Scanner sc = new Scanner(System.in);
-	
-	private void SystemController() {
-		
-	}
-	
+
 	public static SystemController getInstance() {
 		return instance;
 	}
@@ -21,6 +16,7 @@ public class SystemController {
 	}
 	
 	public void run() {
+		FileController.getInstance().load();
 		mainMenu();
 	}
 
@@ -45,7 +41,10 @@ public class SystemController {
 					else if(chk == 2) instructorMenu();
 				}
 				else if(sel == 4) UserController.getInstance().logout();
-				else if(sel == 0) run = false;
+				else if(sel == 0) {
+					FileController.getInstance().save();
+					run = false;
+				}
 					
 			} catch (Exception e) {}	
 		}
@@ -55,19 +54,17 @@ public class SystemController {
 		boolean run = true;
 		while(run) {
 			System.out.println("=== Student MENU ===");
-			System.out.println("1.시험보기\n2.채점하기\n0.메인으로");
+			System.out.println("1.수강신청\n2.시험보기\n3.시험결과\n0.메인으로");
 			System.out.print("선택> ");
 			String select = sc.next();
 			
 			try {
 				int sel = Integer.parseInt(select);
 				
-				if(sel == 1) SubjectController.getInstance().test();
-				else if(sel == 2) SubjectController.getInstance().grading();
-				else if(sel == 0) {
-					User.log = -1;
-					run = false;
-				}
+				if(sel == 1) SubjectController.getInstance().applySubject();
+				else if(sel == 2) SubjectController.getInstance().test();
+				else if(sel == 3) SubjectController.getInstance().testResult();
+				else if(sel == 0) run = false;
 				
 			} catch (Exception e) {}				
 		}
@@ -76,6 +73,7 @@ public class SystemController {
 	private void instructorMenu() {
 		boolean run = true;
 		while(run) {
+			SubjectController.getInstance().printData();
 			System.out.println("=== Instructor MENU ===");
 			System.out.println("1.학생정렬\n2.학생출력\n3.과목추가\n4.성적입력\n0.메인으로");
 			System.out.print("선택> ");
@@ -88,10 +86,7 @@ public class SystemController {
 				else if(sel == 2) UserController.getInstance().printStudents();
 				else if(sel == 3) SubjectController.getInstance().addSubject();
 				else if(sel == 4) SubjectController.getInstance().addScore();
-				else if(sel == 0) {
-					User.log = -1;
-					run = false;
-				}
+				else if(sel == 0) run = false;
 				
 			} catch (Exception e) {}						
 		}
