@@ -5,22 +5,26 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 class SnakeAlertFrame extends JFrame{
 	JLabel text = new JLabel();
+	public final int W = Game.dm.width;
+	public final int H = Game.dm.height;
 	
-	public SnakeAlertFrame(String text) {
+	public SnakeAlertFrame(int size) {
 		setLayout(null);
-		setBounds(200, 200, 300, 200);
+		setBounds(W/2 - 120, H/2 - 120, 300, 200);
 		setVisible(true);
 		
 		this.text.setBounds(0, 0, 280, 200);
-		this.text.setText("[GameOver]" + text);
+		this.text.setText("[GameOver] 꼬리길이: " + String.format("%d", size));
 		this.text.setHorizontalAlignment(JLabel.CENTER);
 		this.text.setVisible(true);
 		add(this.text);
@@ -34,6 +38,8 @@ class SnakePanel extends MyUtil{
 	private int SIZE = 4; //10까지만 증가
 	private boolean keyPress;
 	private int tmpY = 0, tmpX = 0; //마지막꼬리좌표저장
+	private int chk = 0; //게임오버체크
+	private JButton reset = new JButton();
 	
 	public SnakePanel() {
 		setLayout(null);
@@ -44,8 +50,31 @@ class SnakePanel extends MyUtil{
 		setApple();
 		setFocusable(true);
 		addKeyListener(this);
+		addResetButton();
 	}
 
+	private void addResetButton() {
+		this.reset.setBounds(450, 10, 100, 30);
+		this.reset.setText("RESET");
+		this.reset.addActionListener(this);
+		add(this.reset);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JButton target = (JButton) e.getSource();
+		
+		if(target == this.reset) {
+			this.SIZE = 4;
+			this.tmpY = 0;
+			this.tmpX = 0;
+			this.chk = 0;
+			setMap();
+			setSnake();
+			setApple();			
+		}
+	}
+	
 	private void setApple() {
 		Random ran = new Random();
 		int y = 0, x = 0;
@@ -164,28 +193,38 @@ class SnakePanel extends MyUtil{
 			
 			int y = rect.getY();
 			int x = rect.getX();
-
+			
 			if(checkBoundary(y,x,e.getKeyCode())) {
 				switch(e.getKeyCode()) {
 				case 38:
+					chkCollision(y-50,x);
 					rect.setY(rect.getY()-50);
 					break;
 				case 37:
+					chkCollision(y,x-50);
 					rect.setX(rect.getX()-50);
 					break;
 				case 40:
+					chkCollision(y+50,x);
 					rect.setY(rect.getY()+50);
 					break;
 				case 39:
+					chkCollision(y,x+50);
 					rect.setX(rect.getX()+50);
 					break;
 				}
-				snakeMove(y,x);	
+				snakeMove(y,x);
 				checkGetItem();
 			}
 		}		
 	}
 	
+	private void checkGameOver() {
+		if(this.chk == -1) {
+			new SnakeAlertFrame(this.SIZE);
+		}
+	}
+
 	private void checkGetItem() {
 		Rect head = this.snake[0][0];
 		Rect appleRect = this.apple;
@@ -214,6 +253,13 @@ class SnakePanel extends MyUtil{
 		this.snake[0][this.SIZE-1] = new Rect(this.tmpX, this.tmpY, 50, 50);
 	}
 
+	private void chkCollision(int y, int x) {
+		for(int i = 2; i < this.SIZE; i++) {
+			Rect myRect = this.snake[0][i];
+			if(myRect.getX() == x && myRect.getY() == y) this.chk = -1;
+		}
+	}
+	
 	private boolean checkBoundary(int y, int x, int code) {
 		if(code >= 37 && code <= 40) {
 			Rect mapRect = this.map[0][0];	
@@ -221,19 +267,28 @@ class SnakePanel extends MyUtil{
 			Rect myRect = this.snake[0][1];
 			
 			if(code == 37) {
+				if(x - 50 < mapRect.getX()) this.chk = -1;
 				if(x - 50 < mapRect.getX() || x - 50 == myRect.getX()) {
 					return false; 
-//					if(x - 50 < mapRect.getX()) {}
 				}
 			}
 			else if(code == 38) {
-				if(y - 50 < mapRect.getY() || y - 50 == myRect.getY()) return false;
+				if(y - 50 < mapRect.getY()) this.chk = -1;
+				if(y - 50 < mapRect.getY() || y - 50 == myRect.getY()) {
+					return false;
+				}
 			}
 			else if(code == 39) {
-				if(x + 50 > mapRect2.getX() || x + 50 == myRect.getX()) return false;
+				if(x + 50 > mapRect2.getX()) this.chk = -1;
+				if(x + 50 > mapRect2.getX() || x + 50 == myRect.getX()) {
+					return false;
+				}
 			}
 			else if(code == 40) {
-				if(y + 50 > mapRect2.getY() || y + 50 == myRect.getY()) return false;
+				if(y + 50 > mapRect2.getY()) this.chk = -1;
+				if(y + 50 > mapRect2.getY() || y + 50 == myRect.getY()) {
+					return false;
+				}
 			}
 		}
 		else return false;
@@ -243,12 +298,13 @@ class SnakePanel extends MyUtil{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		this.keyPress = false;
+		checkGameOver();
 	}
 }
 
 public class Game extends JFrame {
 	private SnakePanel panel = new SnakePanel();
-	private Dimension dm = Toolkit.getDefaultToolkit().getScreenSize();
+	public static Dimension dm = Toolkit.getDefaultToolkit().getScreenSize();
 	public final int W = dm.width;
 	public final int H = dm.height;
 	
