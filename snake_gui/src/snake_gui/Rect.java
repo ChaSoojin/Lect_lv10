@@ -6,8 +6,11 @@ public class Rect {
 	private int x, y, width, height;
 	private Color c;
 	
-	public Rect() {
-		
+	public Rect(int x, int y, int width, int height) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 	}
 
 	public int getX() {
@@ -40,5 +43,13 @@ public class Rect {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public void setColor(Color c) {
+		this.c = c;
+	}
+	
+	public Color getColor() {
+		return this.c;
 	}
 }
