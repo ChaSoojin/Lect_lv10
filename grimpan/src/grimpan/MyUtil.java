@@ -45,7 +45,6 @@ public class MyUtil extends JPanel implements ActionListener, MouseListener, Mou
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

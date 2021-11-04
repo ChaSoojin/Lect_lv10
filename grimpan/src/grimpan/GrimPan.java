@@ -61,26 +61,22 @@ class GrimPanel extends MyUtil{
 	public void mouseDragged(MouseEvent e) {
 		super.mouseDragged(e);	
 		this.x2 = e.getX();
-		this.y2 = e.getY();										
+		this.y2 = e.getY();		
 	}
-	
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		super.mouseReleased(e);
-		
-		this.pressShift = false;
-	}
-	
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.isShiftDown() == true) {
 			this.pressShift = true;
 		}
+		//else this.pressShift = false;
+		
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		super.keyReleased(e);
+		this.pressShift = false;
 	}
 }
 
